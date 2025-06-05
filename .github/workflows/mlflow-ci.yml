@@ -1,0 +1,36 @@
+name: MLflow CI - Retrain Model
+
+on:
+  push:
+    branches: [main] # Trigger ketika ada push ke branch main
+  pull_request:
+    branches: [main]
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.12.6
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.12.6
+
+      - name: Install dependencies
+        run: |
+          cd MLProject # Pindah ke direktori MLProject
+          conda env create -f conda.yaml # Buat environment conda
+          conda activate mlproject_env # Aktifkan environment conda
+
+      - name: Run MLflow project
+        run: |
+          cd MLProject # Pastikan kita di dalam folder MLProject
+          mlflow run . # Jalankan MLflow project dari direktori saat ini
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.email "margaretalolalilulita@gmail.com" # Ganti dengan email Anda
+          git config --global user.name "margaretalola" # Ganti dengan nama Anda
+          git add .
+          git commit -m "Retrained model (CI)" || echo "No changes to commit"
+          git push origin main

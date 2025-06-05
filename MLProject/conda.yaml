@@ -1,0 +1,18 @@
+name: mlproject_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - pip
+  - pandas
+  - scikit-learn
+  - mlflow
+  - python-Levenshtein
+  - scipy
+  - joblib
+  - dagshub
+  - pip:
+      - dagshub
+      - mlflow
+      - scikit-learn
+      - python-Levenshtein
