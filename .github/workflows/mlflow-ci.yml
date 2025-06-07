@@ -52,7 +52,7 @@ jobs:
           mlflow run . --env-manager=local --experiment-name Course-Recommendation -P some-param=value > output.txt
 
           echo "Extracting run_id from logs..."
-          RUN_ID=$(grep -oE "Run \(ID '[a-f0-9]+'\)" output.txt | sed -E "s/Run \(ID '([a-f0-9]+)'\)/\1/")
+          RUN_ID=$(grep -oP "(?<=Run \(ID ')[a-f0-9]+(?='\))" output.txt)
           echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
         env:
           MLFLOW_TRACKING_URI: file:./mlruns
