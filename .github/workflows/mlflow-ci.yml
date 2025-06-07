@@ -46,11 +46,12 @@ jobs:
       - name: Run MLflow project
         id: mlflow-run
         run: |
-          cd MLProject # Make sure you are in the directory before running
+          cd MLProject
           source /usr/share/miniconda/etc/profile.d/conda.sh
           conda activate mlflowproject_env
-          mlflow run . > output.txt
 
+          RUN_ID=$(mlflow run . -e main -P data_path=preprocessed_data.csv --experiment-name Course-Recommendation -b local --env-manager=local --no-conda --run-id-only)
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
         env:
           MLFLOW_TRACKING_URI: file:./mlruns
 
