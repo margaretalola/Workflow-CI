@@ -24,7 +24,8 @@ jobs:
 
       - name: Conda Init
         run: |
-          conda init bash # Atau zsh, tergantung shell defaultnya
+          conda init bash
+          source ~/.bashrc # Load the updated bash configuration
 
       - name: Clear Conda Cache
         run: |
@@ -37,7 +38,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd MLProject # Change to the MLProject directory
-          conda env create -f conda.yaml
+          conda env create -f conda.yaml --force # create env everytime
           conda activate mlflowproject_env
           pip install -r requirements.txt
 
@@ -46,6 +47,10 @@ jobs:
         run: |
           cd MLProject # Make sure you are in the directory before running
           mlflow run .  # Run MLflow project
+          echo "run_id=$(mlflow runs describe ${{ steps.mlflow-run.outputs.run_id }} | grep run_id | awk '{print $2}')" >> $GITHUB_OUTPUT
+
+        env:
+          MLFLOW_TRACKING_URI: http://localhost:5000 # Asumsi server tracking lokal. Sesuaikan jika berbeda
 
       - name: Upload Model as Artifact
         uses: actions/upload-artifact@v4
@@ -68,3 +73,4 @@ jobs:
           docker push margaretalola/course-recommendation-model:latest
         env:
           DOCKER_USERNAME: margaretalola
+          MLFLOW_TRACKING_URI: http://localhost:5000 # Important to define this
