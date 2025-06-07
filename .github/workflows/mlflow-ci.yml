@@ -21,6 +21,7 @@ jobs:
       - name: Update Conda
         run: |
           conda update -n base -c defaults conda --yes
+          conda --version
 
       - name: Conda Init
         run: |
@@ -38,7 +39,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd MLProject # Change to the MLProject directory
-          conda env create -f conda.yaml --force # create env everytime
+          conda env create -f conda.yaml
           conda activate mlflowproject_env
           pip install -r requirements.txt
 
