@@ -52,7 +52,7 @@ jobs:
           echo "run_id=$run_id" >> $GITHUB_OUTPUT
 
         env:
-          MLFLOW_TRACKING_URI: http://localhost:5000 # Asumsi server tracking lokal. Sesuaikan jika berbeda
+          MLFLOW_TRACKING_URI: file:./mlruns
 
       - name: Upload Model as Artifact
         uses: actions/upload-artifact@v4
@@ -75,4 +75,4 @@ jobs:
           docker push margaretalola/course-recommendation-model:latest
         env:
           DOCKER_USERNAME: margaretalola
-          MLFLOW_TRACKING_URI: http://localhost:5000
+          TRACKING_URI: http://localhost:5000

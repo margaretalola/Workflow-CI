@@ -9,6 +9,7 @@ import joblib
 import os
 import logging
 from scipy.sparse import csr_matrix
+from sklearn.base import BaseEstimator
 
 # Konfigurasi logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -37,6 +38,15 @@ def create_content_column(df):
         logging.error(f"Error creating content column: {e}")
         return df
 
+class DummyModel(BaseEstimator):
+    def __init__(self, tfidf_vectorizer, cosine_matrix):
+        self.tfidf_vectorizer = tfidf_vectorizer
+        self.cosine_matrix = cosine_matrix
+
+    def predict(self, X):
+        return ["Not Implemented"] * len(X)
+    
+
 def train_model(df):
     with mlflow.start_run():  
         tfidf = TfidfVectorizer(stop_words='english', max_features=5000, ngram_range=(1, 2))
@@ -51,7 +61,11 @@ def train_model(df):
         mlflow.log_artifact("models/tfidf_vectorizer.pkl")
         mlflow.log_artifact("models/cosine_sim_matrix.pkl")
 
-        logging.info("Model dan matriks similarity disimpan dan dicatat oleh MLflow lokal.")
+         # Logging model ke MLflow
+        dummy_model = DummyModel(tfidf, cosine_sim)
+        mlflow.sklearn.log_model(dummy_model, artifact_path="model")
+
+        logging.info("Model dan matriks similarity disimpan dan dicatat oleh MLflow")
 
 def recommend_courses(course_title, df, cosine_sim, top_n=5):
     try:
