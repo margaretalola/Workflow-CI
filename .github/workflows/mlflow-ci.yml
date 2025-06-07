@@ -65,8 +65,8 @@ jobs:
           echo "Run ID: $RUN_ID"
           echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
 
-          env:
-            MLFLOW_TRACKING_URI: file:./mlruns
+        env:
+          MLFLOW_TRACKING_URI: file:./mlruns
 
       - name: Upload Model as Artifact
         uses: actions/upload-artifact@v4
