@@ -1,10 +1,9 @@
-name: mlproject_env
+name: mlflowproject_env
 channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.12.6 # Ganti versi python disini
-  - pip
+  - python=3.12.6
   - pandas
   - scikit-learn
   - mlflow
@@ -12,8 +11,4 @@ dependencies:
   - scipy
   - joblib
   - dagshub=0.5.10
-  - pip:
-      - dagshub==0.5.10
-      - mlflow
-      - scikit-learn
-      - python-Levenshtein
+  - pip

@@ -1,0 +1,4 @@
+dagshub==0.5.10
+mlflow
+scikit-learn
+python-Levenshtein

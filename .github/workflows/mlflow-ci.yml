@@ -2,7 +2,7 @@ name: MLflow CI - Retrain Model
 
 on:
   push:
-    branches: [main] # Trigger when pushing to main
+    branches: [main]
   pull_request:
     branches: [main]
 
@@ -22,20 +22,21 @@ jobs:
         run: |
           conda clean --all --yes
 
+      - name: Set Conda Channel Priority
+        run: |
+          conda config --set channel_priority strict
+
       - name: Install dependencies
         run: |
           cd MLProject # Change to the MLProject directory
           conda env create -f conda.yaml # Create conda environment
           conda activate mlflowproject_env # Activate the environment
-
-          # Aktifkan environment sebelum pip install
-          conda run -n mlflowproject_env pip install dagshub
-          conda run -n mlflowproject_env pip install mlflow scikit-learn python-Levenshtein
+          pip install -r requirements.txt
 
       - name: Run MLflow project
         id: mlflow-run
         run: |
-          cd MLProject # Make sure you are in the directory before running
+          cd MLProject 
           mlflow run .  # Run MLflow project
 
       - name: Upload Model as Artifact
@@ -46,9 +47,8 @@ jobs:
 
       - name: Commit and push if changed
         run: |
-          git config --global user.email "margaretalolilullita@gmail.com" # Ganti dengan email Anda
-          git config --global user.name "margaretalola" # Ganti dengan nama Anda
-          git add .
+          git config --global user.email "margaretalolilullita@gmail.com" 
+          git config --global user.name "margaretalola" 
           git commit -m "Retrained model (CI)" -a || echo "No changes to commit"
           git push origin main
 
@@ -59,7 +59,3 @@ jobs:
           docker push margaretalola/course-recommendation-model:latest
         env:
           DOCKER_USERNAME: margaretalola
-
-      - name: Set Conda Channel Priority
-        run: |
-          conda config --set channel_priority strict
