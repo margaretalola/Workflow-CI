@@ -88,10 +88,19 @@ jobs:
         run: |
           echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u margaretalola --password-stdin
           cd MLProject
+
+          echo "Listing contents of MLProject before MLflow build-docker:"
+          ls -F .
+          echo "Checking type of ./mlruns:"
+          file ./mlruns || true # Use || true to prevent job failure if file doesn't exist
+
           source /usr/share/miniconda/etc/profile.d/conda.sh
           conda activate mlflowproject_env
 
+          echo "Building Docker image with MLflow..."
           conda run -n mlflowproject_env mlflow models build-docker -m runs:/${{ steps.mlflow-run.outputs.run_id }}/model -n margaretalola/course-recommendation-model:latest
+
+          echo "Pushing Docker Image..."
           docker push margaretalola/course-recommendation-model:latest
         env:
           DOCKER_USERNAME: margaretalola
