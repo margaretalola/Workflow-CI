@@ -50,8 +50,11 @@ jobs:
           source /usr/share/miniconda/etc/profile.d/conda.sh
           conda activate mlflowproject_env
 
-          RUN_ID=$(mlflow run . --env-manager=local --experiment-name Course-Recommendation -b local | tee output.txt | grep -oP 'Run ID: \K(\w+)' || true)
-          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+          RUN_OUTPUT=$(mlflow run . --env-manager=local --experiment-name Course-Recommendation -P some-param=value)
+          echo "$RUN_OUTPUT"
+
+          RUN_ID=$(echo "$RUN_OUTPUT" | grep -oP "Run (ID|with ID) '\K[0-9a-f]{32}")
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
         env:
           MLFLOW_TRACKING_URI: file:./mlruns
 
@@ -77,7 +80,7 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u margaretalola --password-stdin
-          conda run -n mlflowproject_env mlflow models build-docker -m runs:/"${{ steps.mlflow-run.outputs.run_id }}"/model -n margaretalola/course-recommendation-model:latest
+          conda run -n mlflowproject_env mlflow models build-docker -m runs:/${{ steps.mlflow-run.outputs.run_id }}/model -n margaretalola/course-recommendation-model:latest
           docker push margaretalola/course-recommendation-model:latest
         env:
           DOCKER_USERNAME: margaretalola
