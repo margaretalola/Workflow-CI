@@ -51,6 +51,7 @@ jobs:
           conda activate mlflowproject_env
 
           RUN_ID=$(mlflow run . -e main -P data_path=preprocessed_data.csv --experiment-name Course-Recommendation -b local --env-manager=local --no-conda --run-id-only)
+
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
         env:
           MLFLOW_TRACKING_URI: file:./mlruns
