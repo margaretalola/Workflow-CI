@@ -30,7 +30,7 @@ jobs:
           mlflow run .  # Run MLflow project
 
       - name: Upload Model as Artifact
-        uses: actions/upload-artifact@latest
+        uses: actions/upload-artifact@v4
         with:
           name: mlflow-model
           path: MLProject/mlruns/0/*/artifacts/model
