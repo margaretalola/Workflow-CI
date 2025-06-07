@@ -2,13 +2,14 @@ name: MLflow CI - Retrain Model
 
 on:
   push:
-    branches: [main] # Trigger ketika ada push ke branch main
+    branches: [main] # Trigger when pushing to main
   pull_request:
     branches: [main]
 
 jobs:
   retrain:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.12.6
@@ -18,19 +19,34 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd MLProject # Pindah ke direktori MLProject
-          conda env create -f conda.yaml # Buat environment conda
-          conda activate mlproject_env # Aktifkan environment conda
+          cd MLProject # Change to the MLProject directory
+          conda env create -f conda.yaml # Create conda environment
+          conda activate mlflowproject_env # Activate the environment
 
       - name: Run MLflow project
+        id: mlflow-run
         run: |
-          cd MLProject # Pastikan kita di dalam folder MLProject
-          mlflow run . # Jalankan MLflow project dari direktori saat ini
+          cd MLProject # Make sure you are in the directory before running
+          mlflow run .  # Run MLflow project
+
+      - name: Upload Model as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: mlflow-model
+          path: MLProject/mlruns/0/*/artifacts/model
 
       - name: Commit and push if changed
         run: |
-          git config --global user.email "margaretalolalilulita@gmail.com" # Ganti dengan email Anda
+          git config --global user.email "margaretalolilullita@gmail.com" # Ganti dengan email Anda
           git config --global user.name "margaretalola" # Ganti dengan nama Anda
           git add .
-          git commit -m "Retrained model (CI)" || echo "No changes to commit"
+          git commit -m "Retrained model (CI)" -a || echo "No changes to commit"
           git push origin main
+
+      - name: Build and Push Docker Image
+        run: |
+          echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          mlflow models build-docker -m runs:/"${{ steps.mlflow-run.outputs.run_id }}"/model -n $DOCKER_USERNAME/your-model-image:latest
+          docker push $DOCKER_USERNAME/your-model-image:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
