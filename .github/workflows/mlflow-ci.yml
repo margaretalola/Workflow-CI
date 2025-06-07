@@ -24,9 +24,9 @@ jobs:
           conda --version
 
       - name: Conda Init
+        shell: bash
         run: |
-          conda init bash
-          source ~/.bashrc # Load the updated bash configuration
+          conda init bash && source ~/.bashrc # Load the updated bash configuration
 
       - name: Clear Conda Cache
         run: |
