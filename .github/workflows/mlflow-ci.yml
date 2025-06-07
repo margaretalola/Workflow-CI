@@ -41,12 +41,13 @@ jobs:
           cd MLProject 
           conda env create -f conda.yaml
           conda run -n mlflowproject_env pip install -r requirements.txt
+          conda run -n mlflowproject_env pip install mlflow
 
       - name: Run MLflow project
         id: mlflow-run
         run: |
           cd MLProject # Make sure you are in the directory before running
-          mlflow run . > output.txt
+          conda run -n mlflowproject_env mlflow run . > output.txt
           run_id=$(grep -oP 'Run ID: \K[\w]+' output.txt)
           echo "run_id=$run_id" >> $GITHUB_OUTPUT
 
@@ -70,7 +71,7 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u margaretalola --password-stdin
-          mlflow models build-docker -m runs:/"${{ steps.mlflow-run.outputs.run_id }}"/model -n margaretalola/course-recommendation-model:latest
+          conda run -n mlflowproject_env mlflow models build-docker -m runs:/"${{ steps.mlflow-run.outputs.run_id }}"/model -n margaretalola/course-recommendation-model:latest
           docker push margaretalola/course-recommendation-model:latest
         env:
           DOCKER_USERNAME: margaretalola
