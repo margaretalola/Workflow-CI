@@ -1,4 +1,4 @@
 dagshub==0.5.10
-mlflow
-scikit-learn
-python-Levenshtein
+mlflow==2.22.0
+scikit-learn==1.6.1
+python-Levenshtein==0.27.1

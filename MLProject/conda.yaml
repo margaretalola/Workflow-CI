@@ -4,11 +4,7 @@ channels:
   - defaults
 dependencies:
   - python=3.12.6
+  - pip
   - pandas
-  - scikit-learn
-  - mlflow
-  - python-Levenshtein
   - scipy
   - joblib
-  - dagshub=0.5.10
-  - pip

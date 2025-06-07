@@ -18,6 +18,10 @@ jobs:
         with:
           python-version: 3.12.6
 
+      - name: Update Conda
+        run: |
+          conda update -n base -c defaults conda --yes
+
       - name: Clear Conda Cache
         run: |
           conda clean --all --yes
@@ -29,14 +33,14 @@ jobs:
       - name: Install dependencies
         run: |
           cd MLProject # Change to the MLProject directory
-          conda env create -f conda.yaml # Create conda environment
-          conda activate mlflowproject_env # Activate the environment
+          conda env create -f conda.yaml
+          conda activate mlflowproject_env
           pip install -r requirements.txt
 
       - name: Run MLflow project
         id: mlflow-run
         run: |
-          cd MLProject 
+          cd MLProject # Make sure you are in the directory before running
           mlflow run .  # Run MLflow project
 
       - name: Upload Model as Artifact
@@ -47,8 +51,9 @@ jobs:
 
       - name: Commit and push if changed
         run: |
-          git config --global user.email "margaretalolilullita@gmail.com" 
-          git config --global user.name "margaretalola" 
+          git config --global user.email "margaretalolalilullita@gmail.com"
+          git config --global user.name "margaretalola"
+          git add .
           git commit -m "Retrained model (CI)" -a || echo "No changes to commit"
           git push origin main
 
