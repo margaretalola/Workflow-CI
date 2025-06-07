@@ -13,7 +13,7 @@ dependencies:
   - joblib
   - dagshub=0.5.10
   - pip:
-      - dagshub=0.5.10
+      - dagshub==0.5.10
       - mlflow
       - scikit-learn
       - python-Levenshtein
