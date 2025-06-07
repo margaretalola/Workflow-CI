@@ -48,24 +48,23 @@ class DummyModel(BaseEstimator):
     
 
 def train_model(df):
-    with mlflow.start_run():  
-        tfidf = TfidfVectorizer(stop_words='english', max_features=5000, ngram_range=(1, 2))
-        tfidf_matrix = tfidf.fit_transform(df['content'])
-        cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
+    tfidf = TfidfVectorizer(stop_words='english', max_features=5000, ngram_range=(1, 2))
+    tfidf_matrix = tfidf.fit_transform(df['content'])
+    cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
 
-        # Simpan model & cosine similarity matrix
-        os.makedirs("models", exist_ok=True)
-        joblib.dump(tfidf, "models/tfidf_vectorizer.pkl")
-        joblib.dump(csr_matrix(cosine_sim), "models/cosine_sim_matrix.pkl")
+    # Simpan model & cosine similarity matrix
+    os.makedirs("models", exist_ok=True)
+    joblib.dump(tfidf, "models/tfidf_vectorizer.pkl")
+    joblib.dump(csr_matrix(cosine_sim), "models/cosine_sim_matrix.pkl")
+    
+    mlflow.log_artifact("models/tfidf_vectorizer.pkl")
+    mlflow.log_artifact("models/cosine_sim_matrix.pkl")
+    
+    # Logging model ke MLflow
+    dummy_model = DummyModel(tfidf, cosine_sim)
+    mlflow.sklearn.log_model(dummy_model, artifact_path="model")
 
-        mlflow.log_artifact("models/tfidf_vectorizer.pkl")
-        mlflow.log_artifact("models/cosine_sim_matrix.pkl")
-
-         # Logging model ke MLflow
-        dummy_model = DummyModel(tfidf, cosine_sim)
-        mlflow.sklearn.log_model(dummy_model, artifact_path="model")
-
-        logging.info("Model dan matriks similarity disimpan dan dicatat oleh MLflow")
+    logging.info("Model dan matriks similarity disimpan dan dicatat oleh MLflow")
 
 def recommend_courses(course_title, df, cosine_sim, top_n=5):
     try:
