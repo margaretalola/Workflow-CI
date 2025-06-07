@@ -92,7 +92,7 @@ jobs:
           echo "Listing contents of MLProject before MLflow build-docker:"
           ls -F .
           echo "Checking type of ./mlruns:"
-          file ./mlruns || true # Use || true to prevent job failure if file doesn't exist
+          file ./mlruns || true
 
           source /usr/share/miniconda/etc/profile.d/conda.sh
           conda activate mlflowproject_env
@@ -104,4 +104,4 @@ jobs:
           docker push margaretalola/course-recommendation-model:latest
         env:
           DOCKER_USERNAME: margaretalola
-          MLFLOW_TRACKING_URI: file:./MLProject/mlruns
+          MLFLOW_TRACKING_URI: file:./mlruns
