@@ -45,20 +45,26 @@ jobs:
         id: mlflow-run
         run: |
           cd MLProject
+
+          # Ensure conda is initialized for the current shell
           source /usr/share/miniconda/etc/profile.d/conda.sh
           conda activate mlflowproject_env
 
           echo "Running MLflow project..."
-          mlflow run . --env-manager=local --experiment-name Course-Recommendation -P some-param=value > output.txt
+          # Redirect both stdout and stderr to output.txt
+          mlflow run . --env-manager=local --experiment-name Course-Recommendation -P some-param=value > output.txt 2>&1
 
           echo "Extracting run_id from logs..."
+          # The regex for grep is correct, but ensure it's robust
           RUN_ID=$(grep -oP "(?<=Run \(ID ')[a-f0-9]+(?='\))" output.txt)
           if [ -z "$RUN_ID" ]; then
-            echo "Error: run ID not found in logs."
+            echo "Error: Run ID not found in logs. Check output.txt for details."
+            cat output.txt # Print the content of output.txt for debugging
             exit 1
           fi
           echo "Run ID: $RUN_ID"
           echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+
           env:
             MLFLOW_TRACKING_URI: file:./mlruns
 
