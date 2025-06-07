@@ -1,0 +1,7 @@
+# Ignore model files and MLflow runs
+models/
+mlruns/
+output.txt
+*.pkl
+*.joblib
+*.log

@@ -58,15 +58,19 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mlflow-model
-          path: MLProject/mlruns/0/${{ steps.mlflow-run.outputs.run_id }}/artifacts/model
+          path: MLProject/models/
 
       - name: Commit and push if changed
         run: |
-          git config --global user.email "margaretalolalilulita@gmail.com"
+          git config --global user.email "margaretalolalilullita@gmail.com"
           git config --global user.name "margaretalola"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+          # Hanya commit file yang relevan (tidak termasuk model besar)
           git add .
-          git commit -m "Retrained model (CI)" -a || echo "No changes to commit"
+          git status
+
+          git diff-index --quiet HEAD || git commit -m "Retrained model (CI)"
           git push origin main
 
       - name: Build and Push Docker Image
