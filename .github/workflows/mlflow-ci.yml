@@ -87,7 +87,12 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u margaretalola --password-stdin
+          cd MLProject
+          source /usr/share/miniconda/etc/profile.d/conda.sh
+          conda activate mlflowproject_env
+
           conda run -n mlflowproject_env mlflow models build-docker -m runs:/${{ steps.mlflow-run.outputs.run_id }}/model -n margaretalola/course-recommendation-model:latest
           docker push margaretalola/course-recommendation-model:latest
         env:
           DOCKER_USERNAME: margaretalola
+          MLFLOW_TRACKING_URI: file:./MLProject/mlruns
