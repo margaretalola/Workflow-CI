@@ -38,17 +38,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd MLProject # Change to the MLProject directory
+          cd MLProject 
           conda env create -f conda.yaml
-          conda activate mlflowproject_env
-          pip install -r requirements.txt
+          conda run -n mlflowproject_env pip install -r requirements.txt
 
       - name: Run MLflow project
         id: mlflow-run
         run: |
           cd MLProject # Make sure you are in the directory before running
-          mlflow run .  # Run MLflow project
-          echo "run_id=$(mlflow runs describe ${{ steps.mlflow-run.outputs.run_id }} | grep run_id | awk '{print $2}')" >> $GITHUB_OUTPUT
+          conda run -n mlflowproject_env mlflow run . --no-conda > output.txt
+          run_id=$(grep -oP 'Run ID: \K[\w]+' output.txt)
+          echo "run_id=$run_id" >> $GITHUB_OUTPUT
 
         env:
           MLFLOW_TRACKING_URI: http://localhost:5000 # Asumsi server tracking lokal. Sesuaikan jika berbeda
