@@ -50,8 +50,7 @@ jobs:
           source /usr/share/miniconda/etc/profile.d/conda.sh
           conda activate mlflowproject_env
 
-          RUN_ID=$(mlflow run . -e main -P data_path=preprocessed_data.csv --experiment-name Course-Recommendation -b local --env-manager=local --no-conda --run-id-only)
-
+          RUN_ID=$(mlflow run . --env-manager=local --experiment-name Course-Recommendation -b local | tee output.txt | grep -oP 'Run ID: \K(\w+)' || true)
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
         env:
           MLFLOW_TRACKING_URI: file:./mlruns
