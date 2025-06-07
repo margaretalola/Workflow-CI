@@ -73,4 +73,4 @@ jobs:
           docker push margaretalola/course-recommendation-model:latest
         env:
           DOCKER_USERNAME: margaretalola
-          MLFLOW_TRACKING_URI: http://localhost:5000 # Important to define this
+          MLFLOW_TRACKING_URI: http://localhost:5000
