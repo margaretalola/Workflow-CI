@@ -48,7 +48,7 @@ class DummyModel(BaseEstimator):
     
 
 def train_model(df):
-    with mlflow.start_run(nested=True):
+    with mlflow.start_run():
         tfidf = TfidfVectorizer(stop_words='english', max_features=5000, ngram_range=(1, 2))
         tfidf_matrix = tfidf.fit_transform(df['content'])
         cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
