@@ -47,9 +47,9 @@ jobs:
         id: mlflow-run
         run: |
           cd MLProject # Make sure you are in the directory before running
-          conda run -n mlflowproject_env mlflow run . > output.txt
-          run_id=$(grep -oP 'Run ID: \K[\w]+' output.txt)
-          echo "run_id=$run_id" >> $GITHUB_OUTPUT
+          source /usr/share/miniconda/etc/profile.d/conda.sh
+          conda activate mlflowproject_env
+          mlflow run . > output.txt
 
         env:
           MLFLOW_TRACKING_URI: file:./mlruns
