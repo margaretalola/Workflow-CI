@@ -88,4 +88,6 @@ if __name__ == "__main__":
     df = load_data(data_path)
     if df is not None:
         df = create_content_column(df)
-        train_model(df)
+        with mlflow.start_run(run_name="course_model_training"):
+            train_model(df)
+
