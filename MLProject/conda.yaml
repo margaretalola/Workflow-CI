@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.12.6
+  - python=3.12.6 # Ganti versi python disini
   - pip
   - pandas
   - scikit-learn
@@ -11,9 +11,9 @@ dependencies:
   - python-Levenshtein
   - scipy
   - joblib
-  - dagshub
+  - dagshub=0.5.10
   - pip:
-      - dagshub
+      - dagshub=0.5.10
       - mlflow
       - scikit-learn
       - python-Levenshtein

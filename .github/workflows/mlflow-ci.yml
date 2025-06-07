@@ -12,16 +12,25 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python 3.12.6
         uses: actions/setup-python@v3
         with:
           python-version: 3.12.6
+
+      - name: Clear Conda Cache
+        run: |
+          conda clean --all --yes
 
       - name: Install dependencies
         run: |
           cd MLProject # Change to the MLProject directory
           conda env create -f conda.yaml # Create conda environment
           conda activate mlflowproject_env # Activate the environment
+
+          # Aktifkan environment sebelum pip install
+          conda run -n mlflowproject_env pip install dagshub
+          conda run -n mlflowproject_env pip install mlflow scikit-learn python-Levenshtein
 
       - name: Run MLflow project
         id: mlflow-run
@@ -50,3 +59,7 @@ jobs:
           docker push margaretalola/course-recommendation-model:latest
         env:
           DOCKER_USERNAME: margaretalola
+
+      - name: Set Conda Channel Priority
+        run: |
+          conda config --set channel_priority strict
