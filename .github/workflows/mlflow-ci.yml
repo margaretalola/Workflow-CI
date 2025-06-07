@@ -45,8 +45,8 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          mlflow models build-docker -m runs:/"${{ steps.mlflow-run.outputs.run_id }}"/model -n $DOCKER_USERNAME/your-model-image:latest
-          docker push $DOCKER_USERNAME/your-model-image:latest
+          echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u margaretalola --password-stdin
+          mlflow models build-docker -m runs:/"${{ steps.mlflow-run.outputs.run_id }}"/model -n margaretalola/course-recommendation-model:latest
+          docker push margaretalola/course-recommendation-model:latest
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_USERNAME: margaretalola
